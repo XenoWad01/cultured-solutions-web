@@ -20,7 +20,7 @@ export const ThreeForeground = () => {
   const cursorRef = useRef<Mesh>(null!)
   const { camera } = useThree()
   
-  const gradientTexture =  new TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/200360/gradient-test.jpg')
+  const gradientTexture = useMemo(() => new TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/200360/gradient-test.jpg'), [])
   const wobbleSpring = useSpring({
     config: { ...config.stiff },
     from: {

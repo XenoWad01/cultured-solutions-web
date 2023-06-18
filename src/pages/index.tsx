@@ -7,22 +7,26 @@ import { WhoAmIPage } from '@/components/my-pages/who-am-i'
 import { Canvas, RootState, Camera } from '@react-three/fiber'
 import { ThreeForeground } from '@/components/THREE/three-foreground'
 import { ThreeBackground } from '@/components/THREE/three-background'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Color, PerspectiveCamera } from 'three'
 import { useWindowSize } from '@/hooks/use-window-size'
 import { Header } from '@/components/header'
 export default function Home() {
+
   const screenSize = useWindowSize()
+
   const initialGLStateSetterBG = useMemo(() => (state: RootState) => {
     state.gl.setClearColor(new Color("rgb(23,23,23)"), 1) 
     state.camera =  new PerspectiveCamera( 1, screenSize.width / screenSize.height, 1, 2000 );
     return state
   }, [])
+
   const initialGLStateSetterFG = useMemo(() => (state: RootState) => {
     state.gl.setClearColor("black", 0) 
     state.camera =  new PerspectiveCamera( 1, screenSize.width / screenSize.height, 1, 2000 );
     return state
   }, [])
+
   
   return (
     <main
@@ -45,11 +49,13 @@ export default function Home() {
         }}
         // TODO: MAKE THESE BUBBLE DOWN SOMEHOW
         // FUCK THIS...
-        onPointerMove={(e) => { e.bubbles = true }}
-        onPointerDown={(e) => { e.bubbles = true }}
-        onPointerUp={(e) => { e.bubbles = true}}
+        // onPointerMove={(e) => { e.bubbles = true }}
+        // onPointerDown={(e) => { e.bubbles = true }}
+        // onPointerUp={(e) => { e.bubbles = true}}
         style={{
-          position: 'fixed'
+          position: 'fixed',
+          pointerEvents: 'none'
+          
         }}
         className=" fixed h-full w-full z-20"
         onCreated={initialGLStateSetterFG}
@@ -82,7 +88,7 @@ export default function Home() {
 
 
       {/* <== PAGES ==> */}
-      <div className='top-0 left-0 absolute w-full h-full z-5'>
+      <div className='top-0 left-0 absolute w-full h-full z-5 scroll-smooth'>
         { pages.map(page => page)}
       </div>
 
