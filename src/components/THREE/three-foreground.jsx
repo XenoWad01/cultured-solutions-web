@@ -7,9 +7,11 @@ import { MeshDistortMaterial, MeshWobbleMaterial } from "@react-three/drei";
 import { animated, a } from "@react-spring/three";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { TextureLoader } from "three";
-import { material as cursorMaterial } from '@/shaders/cursor/material'
+import { createMaterialFromColors } from '@/shaders/cursor/material'
 import { config, useSpring, useSpringValue } from "@react-spring/web";
 import { mousePositionSnapshot } from "@/stores/valtio-mutable-mouse-position";
+import { pagesInfo } from "@/constants/pages-consts";
+import { usePageStore } from "@/stores/page-store";
 import { useProxy } from 'valtio/utils'
 const vector = new Vector3();
 const ray = new Ray();
@@ -22,14 +24,16 @@ export const ThreeForeground = () => {
   const screenSize = useWindowSize()
   const cursorRef = useRef(null)
   const { camera,  } = useThree()
-  
+  const pageStore = usePageStore(state => state)
   const gradientTexture = useMemo(() => new TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/200360/gradient-test.jpg'), [])
  
-  const { noiseFreq, noiseAmp, scale, lightIntensity } = useSpring({
+
+  const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1, pageStore.pageColor2), [pageStore])
+  const { noiseFreq, noiseAmp, scale } = useSpring({
     noiseFreq: $mouseStore.clicked ? 1 : 0.01,
     scale: $mouseStore.clicked ? 0.2 : 0.1,
-    noiseAmp: $mouseStore.clicked ? 0.1 : 0.01,
-    lightIntensity: $mouseStore.clicked ? 1 : 0,
+    noiseAmp: $mouseStore.clicked ? 0.15 : 0.01,
+
     config: config.gentle
   })
 
@@ -37,10 +41,12 @@ export const ThreeForeground = () => {
   useEffect(() => {
 
   }, [$mouseStore.mousePosition])
+
   useEffect(() => {
 
 
   }, [noiseFreq])
+  
     // Runs on mount
     useEffect(() => {
       // 👇️ mouse position for bg animation 
@@ -92,6 +98,8 @@ export const ThreeForeground = () => {
         (cursorRef.current.material).uniforms.time.value = state.clock.elapsedTime;
         (cursorRef.current.material).uniforms.noiseFreq.value = noiseFreq.get();
         (cursorRef.current.material).uniforms.noiseAmp.value = noiseAmp.get();
+
+       cursorRef.current.rotateX += state.clock.elapsedTime
       }
     });
 
@@ -102,7 +110,7 @@ export const ThreeForeground = () => {
         visible={true}
         position={$mouseStore.mousePosition}
         material={cursorMaterial}
-
+        rotat
         geometry={sphereGeometry}
         scale={scale}
         >

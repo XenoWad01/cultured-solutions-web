@@ -18,7 +18,7 @@ module.exports = {
         headerBg: '#020202',
         headerCardBg: '#272525',
         bgBlack: '#020202',
-      }
+      },
     },
   },
   plugins: [],

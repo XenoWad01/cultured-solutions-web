@@ -1,14 +1,21 @@
-import { ShaderMaterial } from "three"
+import { Material, ShaderMaterial, Vector3 } from "three"
 import { vertex } from "./vertex"
 import { fragment } from "./fragment"
 
-export const material = new ShaderMaterial( {
+export const createMaterialFromColors = (color1, color2) => {
+  console.log('generating color with')
+  console.log('color1: ', color1)
+  console.log('color2: ', color2)
+  
+  return new ShaderMaterial({
   uniforms: {
     time: { type: "f", value: 0.0 },
-    noiseFreq: { type: 'f', value: 0.5 },
-    noiseAmp: {type: 'f', value: 0.5}
+    noiseFreq: { type: 'f', value: 0 },
+    noiseAmp: { type: 'f', value: 0 },
+    color1: { type: 'vec3', value: color1 },
+    color2: { type: 'vec3', value: color2 }
   },
-  
   vertexShader: vertex,
   fragmentShader: fragment
 })
+}

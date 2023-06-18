@@ -12,9 +12,16 @@ import { Color, PerspectiveCamera } from 'three'
 import { useWindowSize } from '@/hooks/use-window-size'
 import { Header } from '@/components/header'
 import { Bloom, DepthOfField, EffectComposer, Noise } from '@react-three/postprocessing'
+import { usePageStore } from '@/stores/page-store'
+
 export default function Home() {
 
   const screenSize = useWindowSize()
+  const pageStore = usePageStore(state => state)
+
+  // useEffect(() => {
+    
+  // }, [])
 
   const initialGLStateSetterBG = useMemo(() => (state: RootState) => {
     state.gl.setClearColor(new Color("rgb(23,23,23)"), 1) 

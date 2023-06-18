@@ -2,9 +2,11 @@
 import { ReactElement } from "react"
 import { WelcomePage, pageId as welcomePageId } from "./welcome-page"
 import { WhoAmIPage, pageId as whoAmIId } from "./who-am-i"
-
+import { ContactPage, pageId as contactId } from "./contact"
+import { TechnologiesPage, pageId as technologiesId } from "./technologies"
+import { ProjectsPage, pageId as projectsId } from "./projects"
 // TODO unhardcode stuff
-export type pageId = typeof welcomePageId | typeof whoAmIId
+export type pageId = typeof welcomePageId | typeof whoAmIId | typeof contactId | typeof technologiesId | typeof projectsId
 
 export type pageType<givenPageId extends pageId> = {
   pageId: givenPageId
@@ -17,5 +19,8 @@ type pagesType = Array<ReactElement>
 
 export const pages: pagesType = [
   <WelcomePage key={welcomePageId}/>,
-  <WhoAmIPage key={whoAmIId}/>
+  <WhoAmIPage key={whoAmIId}/>,
+  <TechnologiesPage key={technologiesId}/>,
+  <ProjectsPage key={projectsId}/>,
+  <ContactPage key={contactId}/>
 ]

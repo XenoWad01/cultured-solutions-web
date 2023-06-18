@@ -1,49 +1,35 @@
-import { useDockStore } from "@/stores/dock-store"
+
 import { a, config, useSpringValue } from "@react-spring/web"
 import { useEffect, useRef } from "react"
-import { CardInfo, HeaderCard } from "./header-card"
+import { HeaderCard } from "./header-card"
 import { useWindowSize } from "@/hooks/use-window-size"
 import { clamp } from "three/src/math/MathUtils"
 import { useSnapshot } from "valtio"
 import { mousePositionSnapshot } from "@/stores/valtio-mutable-mouse-position"
-//import { useMouseStore } from "@/stores/mouse-position"
+import { Logo } from "./logo"
+import { pagesInfo } from "@/constants/pages-consts"
+import { Vector3 } from "three"
 
-const headerItems: Array<CardInfo>  = [
-  {
-    text: 'welcome',
-    id: 'Welcome',
-    color1: 'rgb(240,33,14)',
-    color2: 'rgb(203,237,251)',
-    color3: 'rgb(129,200,249)'
+export interface CardInfo {
+  text: string,
+  id: string,
+  color1: Vector3,
+  color2: Vector3,
+}
 
-  },
-  {
-    text: 'whoami',
-    id: 'WhoAmI',
-    color1: 'rgb(84,238,246)',
-    color2: 'rgb(89,190,249)',
-    color3: 'rgb(193,113,236)'
-  }
-]
+
 
 export const DOCK_ZOOM_LIMIT = [-1, 1]
 
 export const Header = () => {
   const dockRef = useRef<HTMLDivElement>(null!)
-  const dockStore = useDockStore(state => state)
+
   const windowSize = useWindowSize()
   //const mousePosition = useMouseStore((state) => state)
   const mousePosition = useSnapshot(mousePositionSnapshot)
 
 
 
-  useEffect(() => {
-
-  }, [dockStore, dockRef, mousePosition])
-
-  useEffect(() => {
-
-  }, [dockStore])
 
   useEffect(() => {
     // console.log(mousePosition.domMousePosition)
@@ -84,13 +70,13 @@ export const Header = () => {
   return <div className='flex w-full h-16 top-10 fixed text-main z-10 top-0 justify-center'>
     <a.div 
       ref={dockRef} 
-      className='w-[70%] bg-headerBg h-18  rounded-3xl flex'
+      className='w-[60%] bg-headerBg h-24  rounded-3xl flex justify-evenly items-center'
       onMouseOver={() => {
-          dockStore.setHovered(true)
+          // dockStore.setHovered(true)
       }}
 
       onMouseOut={() => {
-          dockStore.setHovered(false)
+          // dockStore.setHovered(false)
       }}
       
       // style={ dockStore.initialHeight !== 0 && dockStore.initialWidth !== 0 && dockStore.initialHeight ? {
@@ -99,7 +85,7 @@ export const Header = () => {
       // } : {}}
 
       >
-      {headerItems.map((cardInfo, index) =>
+      {pagesInfo.map((cardInfo, index) =>
          
             <HeaderCard cardInfo={cardInfo} key={cardInfo.id}/>
 
