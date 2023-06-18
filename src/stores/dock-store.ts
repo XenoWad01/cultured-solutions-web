@@ -2,27 +2,49 @@ import { SpringValue } from "@react-spring/web"
 import { create } from "zustand"
 
 type DockApi = {
+  initialWidth: number | string
+  initialHeight: number | string
+  domMiddleX: number
   hovered: boolean
-  width: number
-  zoomLevel?: SpringValue
-  setZoomLevel: (newVal: SpringValue) => void
-  setWidth: (newVal: number) => void
+  areChildrenHovered: boolean
+  setInitialWidth: (newVal: number | string) => void
+  setInitialHeight: (newVal: number | string) => void
+  setDomMiddleX: (newVal: number) => void
   setHovered: (newVal: boolean) => void
-  setIsZooming: (newVal: boolean) => void
-  generalSet: (newVal: DockApi) => void
+  setAreChildrenHovered: (newVal: boolean) => void
 }
 
 
 
 export const useDockStore = create<DockApi>()(
       (set) => ({
-        width: 0,
+
+        // set on init / window size change
+        initialWidth: 0,
+        initialHeight: 0,
+        domMiddleX: 0,
+        setInitialWidth: (newVal) => set((state) => ({ initialWidth: newVal })),
+        setInitialHeight: (newVal) => set((state) => ({ initialHeight: newVal })),
+        setDomMiddleX: (newVal) => set((state) => ({ domMiddleX: newVal })),
+
+
+        // booleans
         hovered: false,
-        zoomLevel: undefined,
-        setWidth: (newVal) => set((state) => ({ width: newVal })),
-        setZoomLevel: (newVal) => set((state) => ({ zoomLevel: newVal })),
-        setIsZooming: (newVal) => set((state) => ({ isZooming: newVal, hovered: !newVal })),
-        setHovered: (newVal) => set((state) => ({ hovered: newVal, isZooming: !newVal })),
-        generalSet: (newVal) => set(state => ({...newVal}))
+        areChildrenHovered: false,
+        setAreChildrenHovered: (newVal) => set((state) => {
+          if(newVal === true) {
+            return { areChildrenHovered: true, hovered: true }
+          } else {
+            return { areChildrenHovered: true }
+          }
+
+        }),
+        setHovered: (newVal) => set((state) => {
+          if(state.areChildrenHovered) {
+            return { hovered: true }
+          } else {
+            return { hovered: newVal }
+          }
+        }),
       }),
 )

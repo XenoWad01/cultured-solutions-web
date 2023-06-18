@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/shaders/cursor/shader.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/shaders/cursor/shader.js", "src/components/THREE/three-foreground.jsx"],
   "exclude": ["node_modules"]
 }

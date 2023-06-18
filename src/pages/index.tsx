@@ -11,6 +11,7 @@ import { useEffect, useMemo } from 'react'
 import { Color, PerspectiveCamera } from 'three'
 import { useWindowSize } from '@/hooks/use-window-size'
 import { Header } from '@/components/header'
+import { Bloom, DepthOfField, EffectComposer, Noise } from '@react-three/postprocessing'
 export default function Home() {
 
   const screenSize = useWindowSize()
@@ -24,6 +25,7 @@ export default function Home() {
   const initialGLStateSetterFG = useMemo(() => (state: RootState) => {
     state.gl.setClearColor("black", 0) 
     state.camera =  new PerspectiveCamera( 1, screenSize.width / screenSize.height, 1, 2000 );
+    
     return state
   }, [])
 
@@ -42,20 +44,14 @@ export default function Home() {
         gl={{
 
           powerPreference: "default", // indicating what configuration of GPU is suitable for this WebGL context.
-          // (high performance/default are not needed as im trying to make this as light as possible)
           alpha: true,
           antialias: true
           
         }}
-        // TODO: MAKE THESE BUBBLE DOWN SOMEHOW
-        // FUCK THIS...
-        // onPointerMove={(e) => { e.bubbles = true }}
-        // onPointerDown={(e) => { e.bubbles = true }}
-        // onPointerUp={(e) => { e.bubbles = true}}
+
         style={{
           position: 'fixed',
           pointerEvents: 'none'
-          
         }}
         className=" fixed h-full w-full z-20"
         onCreated={initialGLStateSetterFG}
@@ -71,7 +67,6 @@ export default function Home() {
         gl={{
 
           powerPreference: "default", // indicating what configuration of GPU is suitable for this WebGL context.
-          // (high performance/default are not needed as im trying to make this as light as possible)
           alpha: true,
 
         }}
@@ -82,6 +77,14 @@ export default function Home() {
         className=" fixed h-full w-full z-0"
         onCreated={initialGLStateSetterBG}
       >
+              {/* <EffectComposer>
+        <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+        <Noise opacity={0.02} />
+        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+      </EffectComposer> */}
+
+
         <ThreeBackground/>
       </Canvas>
       

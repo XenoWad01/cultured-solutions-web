@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Define general type for useWindowSize hook, which includes width and height
 interface useWindowSizeReturnType {
@@ -47,9 +47,12 @@ export function useWindowSize(): useWindowSizeReturnType {
     setIsMobile(!!windowSize.width && windowSize.width < 780)
   }, [windowSize])
 
-  return { 
-    height: windowSize.height,
-    width: windowSize.width,
-    isMobile: isMobile 
-  }
+  return useMemo(() => { 
+    return {
+      height: windowSize.height,
+      width: windowSize.width,
+      isMobile: isMobile 
+    }
+
+  }, [windowSize, isMobile])
 }
