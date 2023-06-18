@@ -21,8 +21,8 @@ export const ThreeBackground = () => {
     <mesh
     geometry={new PlaneGeometry(400,400,4,4)}
     position={[0,0,-5]}
-    material={new MeshPhongMaterial({color: new Color('black')})}
+    material={new MeshPhongMaterial({color: new Color("rgb(23,23,23)")})}
     />
-    <pointLight position={adjustedPosition} intensity={10}/>
+    <pointLight position={adjustedPosition} color={new Color('rgb(232, 46, 169)')} intensity={10}/>
   </>
 }

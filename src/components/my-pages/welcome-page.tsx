@@ -7,7 +7,7 @@ export const WelcomePage = (): ReactElement => {
   
   return <Layout>
     <div id={pageId} className="w-full h-full">
-      <h1 className='text-8xl text-white'>Hello</h1>
+      <h1 className='text-8xl mt-36 text-white'>Hello</h1>
     </div>
   </Layout>
   

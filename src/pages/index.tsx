@@ -8,12 +8,13 @@ import { Canvas, RootState, Camera } from '@react-three/fiber'
 import { ThreeForeground } from '@/components/THREE/three-foreground'
 import { ThreeBackground } from '@/components/THREE/three-background'
 import { useMemo } from 'react'
-import { PerspectiveCamera } from 'three'
+import { Color, PerspectiveCamera } from 'three'
 import { useWindowSize } from '@/hooks/use-window-size'
+import { Header } from '@/components/header'
 export default function Home() {
   const screenSize = useWindowSize()
   const initialGLStateSetterBG = useMemo(() => (state: RootState) => {
-    state.gl.setClearColor("black", 1) 
+    state.gl.setClearColor(new Color("rgb(23,23,23)"), 1) 
     state.camera =  new PerspectiveCamera( 1, screenSize.width / screenSize.height, 1, 2000 );
     return state
   }, [])
@@ -25,14 +26,14 @@ export default function Home() {
   
   return (
     <main
-      className={`h-screen relative ${inter.className}`}
+      className={`h-screen w-screen overflow-x-clip  relative ${inter.className}`}
     >
-
+      <Header/>
 
       {/* <== Canvases ==> */}
       
         {/* (*) => Foreground */}
-      <Canvas
+      {/* <Canvas
         id='Foreground'
         gl={{
 
@@ -49,7 +50,7 @@ export default function Home() {
       >
 
         <ThreeForeground/>
-      </Canvas>
+      </Canvas> */}
 
      
         {/* (*) => Background */}
@@ -66,7 +67,7 @@ export default function Home() {
           position: 'fixed'
         }}
         
-        className=" fixed h-full w-full z-1"
+        className=" fixed h-full w-full z-0"
         onCreated={initialGLStateSetterBG}
       >
         <ThreeBackground/>
@@ -75,7 +76,7 @@ export default function Home() {
 
 
       {/* <== PAGES ==> */}
-      <div className='top-0 left-0 absolute w-full h-full z-10'>
+      <div className='top-0 left-0 absolute w-full h-full z-5'>
         { pages.map(page => page)}
       </div>
 
