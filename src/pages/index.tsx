@@ -33,7 +33,7 @@ export default function Home() {
       {/* <== Canvases ==> */}
       
         {/* (*) => Foreground */}
-      {/* <Canvas
+      <Canvas
         id='Foreground'
         gl={{
 
@@ -41,7 +41,13 @@ export default function Home() {
           // (high performance/default are not needed as im trying to make this as light as possible)
           alpha: true,
           antialias: true
+          
         }}
+        // TODO: MAKE THESE BUBBLE DOWN SOMEHOW
+        // FUCK THIS...
+        onPointerMove={(e) => { e.bubbles = true }}
+        onPointerDown={(e) => { e.bubbles = true }}
+        onPointerUp={(e) => { e.bubbles = true}}
         style={{
           position: 'fixed'
         }}
@@ -50,7 +56,7 @@ export default function Home() {
       >
 
         <ThreeForeground/>
-      </Canvas> */}
+      </Canvas>
 
      
         {/* (*) => Background */}
