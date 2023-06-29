@@ -7,21 +7,21 @@ import { WhoAmIPage } from '@/components/my-pages/who-am-i'
 import { Canvas, RootState, Camera } from '@react-three/fiber'
 import { ThreeForeground } from '@/components/THREE/three-foreground'
 import { ThreeBackground } from '@/components/THREE/three-background'
-import { useEffect, useMemo } from 'react'
+import { MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import { Color, PerspectiveCamera } from 'three'
 import { useWindowSize } from '@/hooks/use-window-size'
 import { Header } from '@/components/header'
 import { Bloom, DepthOfField, EffectComposer, Noise } from '@react-three/postprocessing'
 import { usePageStore } from '@/stores/page-store'
 
-export default function Home() {
 
+export default function Home() {
+  const mainPagesRef = useRef<HTMLElement>()
   const screenSize = useWindowSize()
   const pageStore = usePageStore(state => state)
 
-  // useEffect(() => {
-    
-  // }, [])
+
+
 
   const initialGLStateSetterBG = useMemo(() => (state: RootState) => {
     state.gl.setClearColor(new Color("rgb(23,23,23)"), 1) 
@@ -39,7 +39,8 @@ export default function Home() {
   
   return (
     <main
-      className={`h-screen w-screen overflow-x-clip  relative ${inter.className}`}
+      className={`h-screen w-screen overflow-x-clip  relative font-overpass-mono`}
+      ref={mainPagesRef}
     >
       <Header/>
 
@@ -98,8 +99,8 @@ export default function Home() {
 
 
       {/* <== PAGES ==> */}
-      <div className='top-0 left-0 absolute w-full h-full z-5 scroll-smooth'>
-        { pages.map(page => page)}
+      <div className='top-0 left-0 absolute w-full h-full z-5 scroll-smooth' >
+        {pages.map(page => page)}
       </div>
 
 

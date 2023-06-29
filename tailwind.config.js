@@ -1,3 +1,6 @@
+const { tailwindPageColors } = require('./src/constants/pages-consts')
+
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -7,17 +10,21 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      width: {
+        '192': '48rem'
+      },
+      fontFamily: {
+        'overpass-mono': ['Overpass+Mono', 'sans-serif']
       },
       colors: {
-        main: '#C34D3C',
+        // ...tailwindPageColors,
+          main: '#C34D3C',
         secondary: '#3CB2C3',
         headerBg: '#020202',
         headerCardBg: '#272525',
         bgBlack: '#020202',
+        darkglass: '#1b1a22',
+        code: '#2b2b37'
       },
     },
   },

@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono&display=swap');
 
 body {
   background: rgba(0,0,0,0);
 }
 * {
   user-select: none;
-  /* cursor: none; */
+  cursor: none;
 
 }
 
@@ -30,4 +31,17 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Gradient which is css and is generated via tools so its hard to convert to css */
+.darkglassgradient {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(166deg, rgba(27,26,34,0.15) 0%, rgba(27,26,34,0.69) 47%, rgba(27,26,34,0.69) 50%, rgba(27,26,34,0.15) 100%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+
+.shadowactiveheader {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }

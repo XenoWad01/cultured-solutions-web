@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-
+import Color from "@/utils/Color";
 // Define general type for useWindowSize hook, which includes width and height
 interface useWindowSizeReturnType {
   width: number | undefined;

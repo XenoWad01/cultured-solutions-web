@@ -1,6 +1,6 @@
 // import { useMouseStore } from "@/stores/mouse-position";
 import { extend, useFrame, useThree } from "@react-three/fiber";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Color, Euler, Mesh, MeshBasicMaterial, Plane, Ray, ShaderMaterial, SphereGeometry, Vector2, Vector3 } from "three";
 import { CommonItems } from "./common";
 import { MeshDistortMaterial, MeshWobbleMaterial } from "@react-three/drei";
@@ -8,16 +8,23 @@ import { animated, a } from "@react-spring/three";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { TextureLoader } from "three";
 import { createMaterialFromColors } from '@/shaders/cursor/material'
-import { config, useSpring, useSpringValue } from "@react-spring/web";
+import { config, useSpring, useSpringValue, useScroll } from "@react-spring/web";
 import { mousePositionSnapshot } from "@/stores/valtio-mutable-mouse-position";
 import { pagesInfo } from "@/constants/pages-consts";
 import { usePageStore } from "@/stores/page-store";
 import { useProxy } from 'valtio/utils'
+import { lerp } from "three/src/math/MathUtils";
+
 const vector = new Vector3();
 const ray = new Ray();
 const planeZ = new Plane(new Vector3(0, 0, 1),);
 const random = new Vector3(0, 0, 0)
 const sphereGeometry = new SphereGeometry(1, 200, 200)
+const defaultOldV3Color = new Vector3(0.0,0.0, 0.0)
+
+const pagesCount = pagesInfo.length
+// -1 is because 0 means first page and thats 0 value so the other n-1 pages start at thispage + onePageWorhtOfSCroll
+const onePageScroll = 100 / (pagesCount - 1) 
 
 export const ThreeForeground = () => {
   let $mouseStore = useProxy(mousePositionSnapshot)
@@ -26,27 +33,51 @@ export const ThreeForeground = () => {
   const { camera,  } = useThree()
   const pageStore = usePageStore(state => state)
   const gradientTexture = useMemo(() => new TextureLoader().load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/200360/gradient-test.jpg'), [])
- 
+  
 
+  const scrollOnChange = useCallback(({ value: { scrollYProgress } }) => {
+      const scrollProgress = (scrollYProgress * 100)
+      const divided = Math.floor(scrollProgress / onePageScroll) 
+      const rest = scrollProgress % onePageScroll
+      console.log('pageIndex:', divided)
+
+      const progressToNextPage = rest / onePageScroll
+      console.log('progressToNextPage: ', progressToNextPage)
+      pageStore.setPage(pagesInfo[divided].id)
+      pageStore.setProgressToNextPage(progressToNextPage)
+  }, [])
+
+
+  useScroll({ 
+    container: pageStore.mainScrollablePagesRef,
+    onChange: scrollOnChange,
+    immediate: true
+  })
+
+  const computedColor1 = useMemo(() => new Vector3(
+    lerp(pageStore.pageColor1.r, pageStore.nextPageColor1.r, pageStore.progressToNextPage), 
+    lerp(pageStore.pageColor1.g, pageStore.nextPageColor1.g, pageStore.progressToNextPage),
+    lerp(pageStore.pageColor1.b, pageStore.nextPageColor1.b, pageStore.progressToNextPage)
+    ), [pageStore])
+
+  const computedColor2 = useMemo(() => new Vector3(
+    lerp(pageStore.pageColor2.r, pageStore.nextPageColor2.r, pageStore.progressToNextPage), 
+    lerp(pageStore.pageColor2.g, pageStore.nextPageColor2.g, pageStore.progressToNextPage),
+    lerp(pageStore.pageColor2.b, pageStore.nextPageColor2.b, pageStore.progressToNextPage)
+    ), [pageStore])
+
+  
   const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1, pageStore.pageColor2), [pageStore])
+
+
   const { noiseFreq, noiseAmp, scale } = useSpring({
     noiseFreq: $mouseStore.clicked ? 1 : 0.01,
     scale: $mouseStore.clicked ? 0.2 : 0.1,
     noiseAmp: $mouseStore.clicked ? 0.15 : 0.01,
-
     config: config.gentle
   })
 
 
-  useEffect(() => {
-
-  }, [$mouseStore.mousePosition])
-
-  useEffect(() => {
-
-
-  }, [noiseFreq])
-  
     // Runs on mount
     useEffect(() => {
       // 👇️ mouse position for bg animation 
@@ -72,7 +103,7 @@ export const ThreeForeground = () => {
         //console.log('rESULT AFTER SET : ', result)
     
         // console.log(ray.intersectPlane(planeZ, result))
-        //console.log('intersects be like ', intersects)
+        // console.log('intersects be like ', intersects)
         let intersection = ray.intersectPlane(planeZ, result)
         $mouseStore.mousePosition = intersection || result
         
@@ -98,8 +129,10 @@ export const ThreeForeground = () => {
         (cursorRef.current.material).uniforms.time.value = state.clock.elapsedTime;
         (cursorRef.current.material).uniforms.noiseFreq.value = noiseFreq.get();
         (cursorRef.current.material).uniforms.noiseAmp.value = noiseAmp.get();
+        (cursorRef.current.material).uniforms.color1.value = computedColor1;
+        (cursorRef.current.material).uniforms.color2.value = computedColor2;
 
-       cursorRef.current.rotateX += state.clock.elapsedTime
+        cursorRef.current.rotateX += state.clock.elapsedTime;
       }
     });
 
@@ -110,7 +143,6 @@ export const ThreeForeground = () => {
         visible={true}
         position={$mouseStore.mousePosition}
         material={cursorMaterial}
-        rotat
         geometry={sphereGeometry}
         scale={scale}
         >

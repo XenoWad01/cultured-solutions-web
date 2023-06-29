@@ -9,12 +9,13 @@ import { mousePositionSnapshot } from "@/stores/valtio-mutable-mouse-position"
 import { Logo } from "./logo"
 import { pagesInfo } from "@/constants/pages-consts"
 import { Vector3 } from "three"
+import Color from "@/utils/Color"
 
 export interface CardInfo {
   text: string,
   id: string,
-  color1: Vector3,
-  color2: Vector3,
+  color1: Color,
+  color2: Color,
 }
 
 
@@ -67,10 +68,10 @@ export const Header = () => {
   //   }
   // }, [])
 
-  return <div className='flex w-full h-16 top-10 fixed text-main z-10 top-0 justify-center'>
+  return <div className='flex w-full h-16 top-4 fixed text-main z-10 top-0 justify-center'>
     <a.div 
       ref={dockRef} 
-      className='w-[60%] bg-headerBg h-24  rounded-3xl flex justify-evenly items-center'
+      className='w-[60%] darkglassgradient h-24  rounded-3xl flex justify-evenly items-center'
       onMouseOver={() => {
           // dockStore.setHovered(true)
       }}
