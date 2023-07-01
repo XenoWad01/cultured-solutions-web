@@ -38,8 +38,8 @@ export const HeaderCard = ({ cardInfo }) => {
     config: config.gentle
   })
 
-  const cardCanvasRef = useRef(null!)
-  const ballRef = useRef(null!)
+  const cardCanvasRef = useRef(null)
+  const ballRef = useRef(null)
   const [cardRect, setCardRect] = useState(null)
 
   const whatever = (id) => {
