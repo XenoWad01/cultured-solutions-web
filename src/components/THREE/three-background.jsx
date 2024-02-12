@@ -1,6 +1,6 @@
-import { Color, MeshBasicMaterial, MeshLambertMaterial, MeshPhysicalMaterial, MeshPhongMaterial, Object3D, PlaneGeometry, Vector3, MeshToonMaterial, ShadowMaterial, BoxGeometry, Camera, PerspectiveCamera, Mesh } from "three"
+import { Color, MeshBasicMaterial, Mesh, MeshLambertMaterial, MeshPhysicalMaterial, MeshPhongMaterial, Object3D, PlaneGeometry, Vector3, MeshToonMaterial, ShadowMaterial, BoxGeometry, Camera, PerspectiveCamera } from "three"
 import { CommonItems } from "./common"
-import { useLayoutEffect, useMemo, useState, useRef } from "react"
+import { useLayoutEffect, useMemo, useState, useRef, useEffect, useCallback } from "react"
 // import { useMouseStore } from "@/stores/mouse-position"
 import { config, useSpring } from "@react-spring/web"
 import { a } from '@react-spring/three'
@@ -11,9 +11,14 @@ import { to } from "@react-spring/web"
 import { lerp } from "three/src/math/MathUtils"
 import { OrbitControls } from "@react-three/drei"
 import { useFrame } from "@react-three/fiber"
+import { gameConfig } from "./config"
+import { Cell } from "./cell"
+import { useGameStore } from "@/stores/game-store"
+const side = gameConfig.side
+const size = gameConfig.size
 
-export const ADJUSTING_FACTOR = 3
-export const ADJUSTING_FACTOR_Z = 3
+export const ADJUSTING_FACTOR = 2
+export const ADJUSTING_FACTOR_Z = 2
 
 const defaultVec3 = new Vector3(0,0,0)
 const adjustedPosVec = new Vector3()
@@ -21,7 +26,7 @@ const adjustedPosVec = new Vector3()
 const planeGeometry = new PlaneGeometry(400,400,4,4)
 // original ->
  const planeMaterial = new MeshPhongMaterial({color: new Color("rgb(23,23,23)")})
-const cubeGeometry = new BoxGeometry(5,5, 5)
+const cubeGeometry = new BoxGeometry(size, size, size)
 const markerGeom = new BoxGeometry(1,1,1)
 // const planeMaterial = new MeshPhysicalMaterial({ color: new Color("rgb(23,23,23)"), metalness: 0.6, reflectivity: 0.5, clearcoat: 0.5 })
 const markerMaterial = new MeshPhysicalMaterial({ color: new Color("rgb(255,0,0)"), metalness: 0.6, reflectivity: 0.5, clearcoat: 0.5 })
@@ -29,7 +34,21 @@ const markerMaterial = new MeshPhysicalMaterial({ color: new Color("rgb(255,0,0)
 const randoCameraForOrbitHackRef = new PerspectiveCamera(1,1,1,1)
 randoCameraForOrbitHackRef.position.set(-5,8,-3)
 
+
 export const ThreeBackground = () => {
+
+  const { gameState, updateGame } = useGameStore()
+  useEffect(() => {
+    // const defaultGameState = gameState.map(z => z.map(y => y.map(x => Math.random() < 0.1)))
+    // setGameState(defaultGameState)
+    console.log('GAME STATE ON MOUNT: ', gameState)
+    const interval = setInterval(updateGame, gameConfig.stepDurationInMs)
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [])
+
   const pageStore = usePageStore(state => state)
   const $mouseStore = useProxy(mousePositionSnapshot)
   const cubeRef = useRef(null)
@@ -45,6 +64,27 @@ export const ThreeBackground = () => {
       cubeRef.current.lookAt(randoCameraForOrbitHackRef.position)
     }
   });
+
+
+
+
+  const computedCells = useMemo(() => {
+    const cubes = []
+    for( let z = 0; z < side; z++ ) {
+			for( let y = 0; y < side; y++ ) {
+				for( let x = 0; x < side; x++ ) {
+          cubes.push(
+            <Cell
+              position={{x,y,z}}
+            />
+          )
+				}
+			}
+		}
+
+    return cubes
+
+  }, [])
 
 
   return <>
@@ -67,17 +107,24 @@ export const ThreeBackground = () => {
       autoRotate={true}
       autoRotateSpeed={5}
       />
-    <mesh
+      <group 
+        ref={cubeRef}
+        position={[-11,0,-10]}
+        
+      >
+        {...computedCells}
+      </group>
+    {/* <mesh
     ref={cubeRef}
     geometry={cubeGeometry}
-    position={[-5,0,-3]}
+    position={[-5,0,-10]}
     material={planeMaterial}
-    />
+    /> */}
 
 
     <mesh
     geometry={planeGeometry}
-    position={[0,0,-10]}
+    position={[0,0,-20]}
     material={planeMaterial}
     />
     

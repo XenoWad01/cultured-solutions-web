@@ -39,10 +39,10 @@ export const ThreeForeground = () => {
       const scrollProgress = (scrollYProgress * 100)
       const divided = Math.floor(scrollProgress / onePageScroll) 
       const rest = scrollProgress % onePageScroll
-      console.log('pageIndex:', divided)
+
 
       const progressToNextPage = rest / onePageScroll
-      console.log('progressToNextPage: ', progressToNextPage)
+
       pageStore.setPage(pagesInfo[divided].id)
       pageStore.setProgressToNextPage(progressToNextPage)
   }, [])
@@ -85,6 +85,7 @@ export const ThreeForeground = () => {
         if(!$mouseStore.clicked)
         $mouseStore.clicked+= 1
       }
+
       const handleWindowMouseUp = () => {
         if($mouseStore.clicked)
         $mouseStore.clicked-= 1
