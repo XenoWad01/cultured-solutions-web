@@ -28,10 +28,10 @@ const cellGeometry = new BoxGeometry(gameConfig.size, gameConfig.size, gameConfi
 
 export const Cell = (props) => {
     const { gameState } = useGameStore()
-    const pageStore = usePageStore()
-    const cellRef = useRef(null)
+    // const pageStore = usePageStore()
+    // const cellRef = useRef(null)
 
-    let $mouseStore = useProxy(mousePositionSnapshot)
+    // let $mouseStore = useProxy(mousePositionSnapshot)
 
 
     const fadeStyles = useSpring({
@@ -42,46 +42,45 @@ export const Cell = (props) => {
         },
     });
 
-    const computedColor1 = useMemo(() => new Vector3(
-        lerp(pageStore.pageColor1.r, pageStore.nextPageColor1.r, pageStore.progressToNextPage), 
-        lerp(pageStore.pageColor1.g, pageStore.nextPageColor1.g, pageStore.progressToNextPage),
-        lerp(pageStore.pageColor1.b, pageStore.nextPageColor1.b, pageStore.progressToNextPage)
-        ), [pageStore])
+//     const computedColor1 = useMemo(() => new Vector3(
+//         lerp(pageStore.pageColor1.r, pageStore.nextPageColor1.r, pageStore.progressToNextPage), 
+//         lerp(pageStore.pageColor1.g, pageStore.nextPageColor1.g, pageStore.progressToNextPage),
+//         lerp(pageStore.pageColor1.b, pageStore.nextPageColor1.b, pageStore.progressToNextPage)
+//         ), [pageStore])
     
-      const computedColor2 = useMemo(() => new Vector3(
-        lerp(pageStore.pageColor2.r, pageStore.nextPageColor2.r, pageStore.progressToNextPage), 
-        lerp(pageStore.pageColor2.g, pageStore.nextPageColor2.g, pageStore.progressToNextPage),
-        lerp(pageStore.pageColor2.b, pageStore.nextPageColor2.b, pageStore.progressToNextPage)
-        ), [pageStore])
+//       const computedColor2 = useMemo(() => new Vector3(
+//         lerp(pageStore.pageColor2.r, pageStore.nextPageColor2.r, pageStore.progressToNextPage), 
+//         lerp(pageStore.pageColor2.g, pageStore.nextPageColor2.g, pageStore.progressToNextPage),
+//         lerp(pageStore.pageColor2.b, pageStore.nextPageColor2.b, pageStore.progressToNextPage)
+//         ), [pageStore])
     
 
-  const { noiseFreq, noiseAmp, scale } = useSpring({
-    noiseFreq: $mouseStore.clicked ? 1 : 0.01,
-    scale: $mouseStore.clicked ? 0.2 : 0.1,
-    noiseAmp: $mouseStore.clicked ? 0.15 : 0.01,
-    config: config.gentle
-  })
+//   const { noiseFreq, noiseAmp, scale } = useSpring({
+//     noiseFreq: $mouseStore.clicked ? 1 : 0.01,
+//     scale: $mouseStore.clicked ? 0.2 : 0.1,
+//     noiseAmp: $mouseStore.clicked ? 0.15 : 0.01,
+//     config: config.gentle
+//   })
 
 
-    const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1, pageStore.pageColor2), [pageStore])
+//     const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1, pageStore.pageColor2), [pageStore])
    
-    useFrame((state) => {
-        if (cellRef.current.material) {
-          (cellRef.current.material).uniforms.time.value = state.clock.elapsedTime;
-          (cellRef.current.material).uniforms.noiseFreq.value = noiseFreq.get();
-          (cellRef.current.material).uniforms.noiseAmp.value = noiseAmp.get();
-          (cellRef.current.material).uniforms.color1.value = computedColor1;
-          (cellRef.current.material).uniforms.color2.value = computedColor2;
+//     useFrame((state) => {
+//         if (cellRef.current.material) {
+//           (cellRef.current.material).uniforms.time.value = state.clock.elapsedTime;
+//           (cellRef.current.material).uniforms.noiseFreq.value = noiseFreq.get();
+//           (cellRef.current.material).uniforms.noiseAmp.value = noiseAmp.get();
+//           (cellRef.current.material).uniforms.color1.value = computedColor1;
+//           (cellRef.current.material).uniforms.color2.value = computedColor2;
   
-          cellRef.current.rotateX += state.clock.elapsedTime;
-        }
-      });
+//           cellRef.current.rotateX += state.clock.elapsedTime;
+//         }
+//       });
     return <a.mesh
-            ref={cellRef}
             castShadow={true}
             receiveShadow={true}
             position={[( props.position.x - .5 * gameConfig.side ) * gameConfig.size, ( props.position.y - .5 * gameConfig.side ) * gameConfig.size, ( props.position.z - .5 * gameConfig.side ) * gameConfig.size]}
-            material={cursorMaterial}
+            material={cellMaterial}
             geometry={cellGeometry}
             scale={fadeStyles.scale}
         />
