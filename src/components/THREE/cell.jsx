@@ -12,9 +12,11 @@ import { useProxy } from 'valtio/utils'
 import { mousePositionSnapshot } from '@/stores/valtio-mutable-mouse-position'
 import { useFrame  } from '@react-three/fiber'
 import { lerp } from "three/src/math/MathUtils";
-const cellMaterial = new MeshPhongMaterial({color: new Color("rgb(23,23,23)")})
+import { MeshDistortMaterial } from '@react-three/drei'
 
-const cellGeometry = new BoxGeometry(gameConfig.size, gameConfig.size, gameConfig.size)
+// const cellMaterial = new MeshPhongMaterial({color: new Color("rgb(23,23,23)")})
+// const cellMaterial = new MeshWobbleMaterial({ factor: 1, speed: 10})
+const cellGeometry = new BoxGeometry(gameConfig.size, gameConfig.size, gameConfig.size, 10,10,10)
 
 
 // props: {
@@ -80,8 +82,10 @@ export const Cell = (props) => {
             castShadow={true}
             receiveShadow={true}
             position={[( props.position.x - .5 * gameConfig.side ) * gameConfig.size, ( props.position.y - .5 * gameConfig.side ) * gameConfig.size, ( props.position.z - .5 * gameConfig.side ) * gameConfig.size]}
-            material={cellMaterial}
+            // material={cellMaterial}
             geometry={cellGeometry}
             scale={fadeStyles.scale}
-        />
+        >
+              <MeshDistortMaterial factor={1} speed={5} color={new Color(0.7,0.2,0)} />    
+        </a.mesh>
 }

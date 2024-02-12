@@ -1,7 +1,7 @@
 
 
 export const gameConfig = {
-    side: 10,
-    size: 1,
+    side: 5,
+    size: 1.7,
     stepDurationInMs: 1000
 }

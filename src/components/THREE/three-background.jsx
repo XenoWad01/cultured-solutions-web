@@ -17,8 +17,8 @@ import { useGameStore } from "@/stores/game-store"
 const side = gameConfig.side
 const size = gameConfig.size
 
-export const ADJUSTING_FACTOR = 2
-export const ADJUSTING_FACTOR_Z = 2
+export const ADJUSTING_FACTOR = 3
+export const ADJUSTING_FACTOR_Z = 5
 
 const defaultVec3 = new Vector3(0,0,0)
 const adjustedPosVec = new Vector3()
@@ -39,9 +39,7 @@ export const ThreeBackground = () => {
 
   const { gameState, updateGame } = useGameStore()
   useEffect(() => {
-    // const defaultGameState = gameState.map(z => z.map(y => y.map(x => Math.random() < 0.1)))
-    // setGameState(defaultGameState)
-    console.log('GAME STATE ON MOUNT: ', gameState)
+
     const interval = setInterval(updateGame, gameConfig.stepDurationInMs)
 
     return () => {
@@ -55,7 +53,7 @@ export const ThreeBackground = () => {
   const markerRef = useRef(null)
 
   const { lightIntensity } = useSpring({
-    lightIntensity: $mouseStore.clicked ? 10 : 0,
+    lightIntensity: $mouseStore.clicked ? 4 : 2,
     config: config.gentle,
   })
 
@@ -109,7 +107,7 @@ export const ThreeBackground = () => {
       />
       <group 
         ref={cubeRef}
-        position={[-11,0,-10]}
+        position={[-15,0,-10]}
         
       >
         {...computedCells}
@@ -135,8 +133,7 @@ export const ThreeBackground = () => {
         lerp(pageStore.pageColor1.r, pageStore.nextPageColor1.r, pageStore.progressToNextPage),
         lerp(pageStore.pageColor1.g, pageStore.nextPageColor1.g, pageStore.progressToNextPage),
         lerp(pageStore.pageColor1.b, pageStore.nextPageColor1.b, pageStore.progressToNextPage)]} 
-      //intensity={lightIntensity}  
-            intensity={10}  
+       intensity={lightIntensity}  
       position={$mouseStore.mousePosition.setX($mouseStore.mousePosition.x * ADJUSTING_FACTOR).setY($mouseStore.mousePosition.y * ADJUSTING_FACTOR).setZ($mouseStore.mousePosition.z * ADJUSTING_FACTOR_Z)}/>
   </>
 }
