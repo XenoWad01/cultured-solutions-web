@@ -1,20 +1,20 @@
 import { create } from "zustand"
 import { gameConfig } from "@/components/THREE/config"
+import { flushSync } from "react-dom";
 
 type GameApi = {
     gameState: Array<Array<Array<boolean>>>,
     prevGameState: Array<Array<Array<boolean>>>,
     nextGameState: Array<Array<Array<boolean>>>,
-    count: number,
     updateGame: () => void,
 }
 
 
-const getNextCellState = (neighbourCount, x,y,z) => {
+const getNextCellState = (neighbourCount) => {
 
     // console.log(`input neighbour count: ${neighbourCount} AT (${x},${y},${z})`)
 
-    if(neighbourCount >= 3  && neighbourCount <= 4){
+    if(neighbourCount >= 3 && neighbourCount <= 4 ){
       return true;
     } else {
         return false
@@ -24,10 +24,10 @@ const getNextCellState = (neighbourCount, x,y,z) => {
 const oneOrZero = (thing: boolean | undefined) => thing === undefined ? 0 : Number(thing)
 
 const getNextGen = (oldState: Array<Array<Array<boolean>>>) => {
-    let nextGen: Array<Array<Array<boolean>>> = oldState;
-    for( let z = 0; z < gameConfig.side; z++ ) {
+    let nextGen: Array<Array<Array<boolean>>> = JSON.parse(JSON.stringify(oldState));
+    for( let x = 0; x < gameConfig.side; x++ ) {
       for( let y = 0; y < gameConfig.side; y++ ) {
-        for( let x = 0; x < gameConfig.side; x++ ) {
+        for( let z = 0; z < gameConfig.side; z++ ) {
 
           let neighbourCount = 
           oneOrZero(oldState?.[x - 1]?.[y]?.[z]) +     // Left
@@ -54,7 +54,7 @@ const getNextGen = (oldState: Array<Array<Array<boolean>>>) => {
           oneOrZero(oldState?.[x]?.[y + 1]?.[z + 1]);  // Down-Forward
   
   
-          nextGen[x][y][z] = getNextCellState(neighbourCount,x,y,z)
+          nextGen[x][y][z] = getNextCellState(neighbourCount)
   
         }
       }
@@ -94,21 +94,20 @@ export const useGameStore = create<GameApi>()(
         prevGameState: defaultPrevGameState,
         gameState: defaultGameState,
         nextGameState: deafultNextGameState,
-        count: 0,
         updateGame: () => {
 
-
-            set((state) => ({
-                prevGameState: state.gameState
-            }))
-            set((state) => ({
-                gameState: state.nextGameState
-            }))
-            set((state) => ({
-                nextGameState: getNextGen(state.gameState)
-            }))
-
-
+            flushSync(() => {
+              set((state) => {
+                const newPrev = JSON.parse(JSON.stringify(state.gameState));
+                const newState = JSON.parse(JSON.stringify(state.nextGameState));
+                const newNext = getNextGen(state.nextGameState);
+                return {
+                  prevGameState: newPrev,
+                  gameState: newState,
+                  nextGameState: newNext
+                }
+              }) 
+            })
         }
 
       }),

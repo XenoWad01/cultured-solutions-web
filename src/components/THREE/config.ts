@@ -1,7 +1,10 @@
 
 
 export const gameConfig = {
-    side: 5,
-    size: 1.7,
-    stepDurationInMs: 1000
+    side: 6,
+    size: 1.5,
+    defaultCubeSegments: 1,
+    aboutToDieCubeSegments: 10,
+    stepDurationInMs: 2000
+
 }

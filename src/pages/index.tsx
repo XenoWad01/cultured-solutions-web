@@ -13,13 +13,14 @@ import { useWindowSize } from '@/hooks/use-window-size'
 import { Header } from '@/components/header'
 import { Bloom, DepthOfField, EffectComposer, Noise } from '@react-three/postprocessing'
 import { usePageStore } from '@/stores/page-store'
+import { usePerformanceStore } from '@/stores/performance-store'
 
 
 export default function Home() {
   const mainPagesRef = useRef<HTMLElement>()
   const screenSize = useWindowSize()
   const pageStore = usePageStore(state => state)
-
+  const { dpr } = usePerformanceStore()
 
 
 
@@ -56,7 +57,6 @@ export default function Home() {
           antialias: true
           
         }}
-
         style={{
           position: 'fixed',
           pointerEvents: 'none'

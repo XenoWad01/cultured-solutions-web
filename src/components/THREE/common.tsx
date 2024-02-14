@@ -1,12 +1,19 @@
 // import { useMouseStore } from "@/stores/mouse-position"
 
-import { mousePositionSnapshot } from "@/stores/valtio-mutable-mouse-position"
-import { useSnapshot } from "valtio"
+import { usePerformanceStore } from "@/stores/performance-store"
+import { PerformanceMonitor } from "@react-three/drei"
+
 
 export const CommonItems = () => {
-  const mousePosition = useSnapshot(mousePositionSnapshot)
+  const { setDpr } = usePerformanceStore()
 
   return <>
-   
+   {/* <PerformanceMonitor 
+    flipflops={3} 
+    factor={1} 
+    // onChange={({ factor }) => setDpr(Math.floor(0.5 + 1.5 * factor))} 
+    onDecline={() => { setDpr(0.5) }}
+    onIncline={() => { setDpr(2) }}
+    /> */}
   </>
 }

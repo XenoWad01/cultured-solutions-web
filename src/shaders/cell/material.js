@@ -10,15 +10,15 @@ import { fragment } from "./fragment"
 
 // A -(lerp)-> B based on themeFactor;
 
-export const createMaterialFromColors = (color1, color2) => {
+export const createMaterialFromColors = (color) => {
 
   return new ShaderMaterial({
   uniforms: {
     time: { type: "f", value: 0.0 },
     noiseFreq: { type: 'f', value: 0 },
     noiseAmp: { type: 'f', value: 0 },
-    color1: { type: 'vec3', value: color1 },
-    color2: { type: 'vec3', value: color2 },
+    color: { type: 'vec3', value: color },
+
   },
   vertexShader: vertex,
   fragmentShader: fragment
