@@ -70,22 +70,22 @@ export const Cell = ({position: {x,y,z}}) => {
         lerp(pageStore.pageColor1.b, pageStore.nextPageColor1.b, pageStore.progressToNextPage)
         ), [pageStore])
     
-//       const computedColor2 = useMemo(() => new Vector3(
-//         lerp(pageStore.pageColor2.r, pageStore.nextPageColor2.r, pageStore.progressToNextPage), 
-//         lerp(pageStore.pageColor2.g, pageStore.nextPageColor2.g, pageStore.progressToNextPage),
-//         lerp(pageStore.pageColor2.b, pageStore.nextPageColor2.b, pageStore.progressToNextPage)
-//         ), [pageStore])
+      const computedColor2 = useMemo(() => new Vector3(
+        lerp(pageStore.pageColor2.r, pageStore.nextPageColor2.r, pageStore.progressToNextPage), 
+        lerp(pageStore.pageColor2.g, pageStore.nextPageColor2.g, pageStore.progressToNextPage),
+        lerp(pageStore.pageColor2.b, pageStore.nextPageColor2.b, pageStore.progressToNextPage)
+        ), [pageStore])
     
 
-//   const { noiseFreq, noiseAmp, scale } = useSpring({
-//     noiseFreq: $mouseStore.clicked ? 1 : 0.01,
-//     scale: $mouseStore.clicked ? 0.2 : 0.1,
-//     noiseAmp: $mouseStore.clicked ? 0.15 : 0.01,
-//     config: config.gentle
-//   })
+  const { noiseFreq, noiseAmp, scale } = useSpring({
+    noiseFreq: $mouseStore.clicked ? 1 : 0.01,
+    scale: $mouseStore.clicked ? 0.2 : 0.1,
+    noiseAmp: $mouseStore.clicked ? 0.15 : 0.01,
+    config: config.gentle
+  })
 
 
-//     const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1, pageStore.pageColor2), [pageStore])
+    const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1), [pageStore])
    
     useFrame((state) => {
   
@@ -116,12 +116,12 @@ export const Cell = ({position: {x,y,z}}) => {
         }
       });
     return <a.mesh
+            ref={cellRef}
             castShadow={true}
             receiveShadow={true}
             position={[( x - .5 * gameConfig.side ) * gameConfig.size, ( y - .5 * gameConfig.side ) * gameConfig.size, ( z - .5 * gameConfig.side ) * gameConfig.size]}
             material={cursorMaterial}
             geometry={geometry}
             scale={fadeStyles.scale}
-        >  
-        </a.mesh>
+        />
 }

@@ -110,7 +110,7 @@ export const ThreeBackground = () => {
       />
       <group 
         ref={cubeRef}
-        position={[-15,0,-10]}
+        position={[-10,0,-10]}
         
       >
 
