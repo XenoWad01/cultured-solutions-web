@@ -3,44 +3,66 @@
 import { a } from '@react-spring/three'
 import { BoxGeometry, Color, MeshPhongMaterial, Vector3 } from 'three'
 import { gameConfig } from './config'
-import { config, useSpring } from '@react-spring/web'
+import { config, useSpring, useSpringValue } from '@react-spring/three'
 import { useGameStore } from '@/stores/game-store'
 import { usePageStore } from '@/stores/page-store'
-import { createMaterialFromColors } from '@/shaders/cursor/material'
-import { useMemo, useRef } from 'react'
+import { createMaterialFromColors } from '@/shaders/cell/material'
+import { useEffect, useMemo, useRef } from 'react'
 import { useProxy } from 'valtio/utils'
 import { mousePositionSnapshot } from '@/stores/valtio-mutable-mouse-position'
 import { useFrame  } from '@react-three/fiber'
 import { lerp } from "three/src/math/MathUtils";
-const cellMaterial = new MeshPhongMaterial({color: new Color("rgb(23,23,23)")})
 
-const cellGeometry = new BoxGeometry(gameConfig.size, gameConfig.size, gameConfig.size)
+const red = new Vector3(1,0,0)  
+const almostREd = new Vector3(0.7,0.1,0.1)
+const green = new Vector3(0,1,0)
+const white = new Vector3(1,1,1)
+const blue = new Vector3(0,0,1)
 
 
-// props: {
-//     position: {
-//         x: number,
-//         y: number,
-//         z: number
-//     },
-//     isAlive: boolean
-// }
-
-export const Cell = (props) => {
-    const { gameState } = useGameStore()
+export const Cell = ({position: {x,y,z}}) => {
+    const { prevGameState, gameState, nextGameState } = useGameStore()
+  
     const pageStore = usePageStore()
     const cellRef = useRef(null)
 
-    let $mouseStore = useProxy(mousePositionSnapshot)
 
+
+  useEffect(() => {
+    if(x ===0 && y ===0 && z === 0) {
+      console.log('PREVIOUS: ', prevGameState[x][y][z])
+      console.log('CURRENT : ', gameState[x][y][z])
+      console.log('NEXT    : ', nextGameState[x][y][z])
+    }
+
+
+
+  }, [prevGameState, gameState, nextGameState, x, y, z])
+
+    let $mouseStore = useProxy(mousePositionSnapshot)
+    const willDieNextGeneration = useMemo(() => !nextGameState[x][y][z] && gameState[x][y][z], [nextGameState, gameState, x,y,z])
+    const willBeBornNextGeneration = useMemo(() => nextGameState[x][y][z] && !gameState[x][y][z], [nextGameState, gameState, x,y,z])
 
     const fadeStyles = useSpring({
-        config: { ...config.stiff },
-        from: { scale: 0 },
+        config: { ...config.slow },
+  
+ 
         to: {
-            scale: gameState[props.position.x][props.position.y][props.position.z] ? 1 : 0
+          scale: willDieNextGeneration ? 0.9 : gameState[x][y][z] ? 1 : 0.1
         },
     });
+
+
+
+
+    const geometry = useMemo(() => new BoxGeometry(
+      gameConfig.size, 
+      gameConfig.size, 
+      gameConfig.size,
+      willDieNextGeneration ? gameConfig.aboutToDieCubeSegments : gameConfig.defaultCubeSegments,
+      willDieNextGeneration ? gameConfig.aboutToDieCubeSegments : gameConfig.defaultCubeSegments,
+      willDieNextGeneration ? gameConfig.aboutToDieCubeSegments : gameConfig.defaultCubeSegments
+      ), [willDieNextGeneration])
 
     const computedColor1 = useMemo(() => new Vector3(
         lerp(pageStore.pageColor1.r, pageStore.nextPageColor1.r, pageStore.progressToNextPage), 
@@ -66,23 +88,40 @@ export const Cell = (props) => {
     const cursorMaterial = useMemo(() => createMaterialFromColors(pageStore.pageColor1, pageStore.pageColor2), [pageStore])
    
     useFrame((state) => {
+  
+
         if (cellRef.current.material) {
           (cellRef.current.material).uniforms.time.value = state.clock.elapsedTime;
-          (cellRef.current.material).uniforms.noiseFreq.value = noiseFreq.get();
-          (cellRef.current.material).uniforms.noiseAmp.value = noiseAmp.get();
-          (cellRef.current.material).uniforms.color1.value = computedColor1;
-          (cellRef.current.material).uniforms.color2.value = computedColor2;
-  
-          cellRef.current.rotateX += state.clock.elapsedTime;
+          (cellRef.current.material).uniforms.noiseFreq.value = willDieNextGeneration ? 1 : 0;
+          (cellRef.current.material).uniforms.noiseAmp.value = willDieNextGeneration ? 0.15 : 0;
+
+
+          if (willDieNextGeneration) {
+            (cellRef.current.material).uniforms.color.value = almostREd
+          } else if (willBeBornNextGeneration) {
+            (cellRef.current.material).uniforms.color.value = blue
+          } else  if (gameState[x][y][z]) {
+            (cellRef.current.material).uniforms.color.value = green
+          } else if (!gameState[x][y][z]) {
+            (cellRef.current.material).uniforms.color.value = red
+          }
+
+
+
+
+
+
+          // (cellRef.current.material).uniforms.aboutToDie.value = willDieNextGeneration;
+          
         }
       });
     return <a.mesh
             ref={cellRef}
             castShadow={true}
             receiveShadow={true}
-            position={[( props.position.x - .5 * gameConfig.side ) * gameConfig.size, ( props.position.y - .5 * gameConfig.side ) * gameConfig.size, ( props.position.z - .5 * gameConfig.side ) * gameConfig.size]}
+            position={[( x - .5 * gameConfig.side ) * gameConfig.size, ( y - .5 * gameConfig.side ) * gameConfig.size, ( z - .5 * gameConfig.side ) * gameConfig.size]}
             material={cursorMaterial}
-            geometry={cellGeometry}
+            geometry={geometry}
             scale={fadeStyles.scale}
         />
 }

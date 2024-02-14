@@ -9,10 +9,11 @@ import { mousePositionSnapshot } from "@/stores/valtio-mutable-mouse-position"
 import { usePageStore } from "@/stores/page-store"
 import { to } from "@react-spring/web"
 import { lerp } from "three/src/math/MathUtils"
-import { OrbitControls } from "@react-three/drei"
+import { Box, Merged, OrbitControls } from "@react-three/drei"
 import { useFrame } from "@react-three/fiber"
 import { gameConfig } from "./config"
 import { Cell } from "./cell"
+import { Mesh as THREEMESH } from "three"
 import { useGameStore } from "@/stores/game-store"
 const side = gameConfig.side
 const size = gameConfig.size
@@ -70,12 +71,14 @@ export const ThreeBackground = () => {
 
   const computedCells = useMemo(() => {
     const cubes = []
-    for( let z = 0; z < side; z++ ) {
+    
+    for( let x = 0; x < side; x++ ) {
 			for( let y = 0; y < side; y++ ) {
-				for( let x = 0; x < side; x++ ) {
+				for( let z = 0; z < side; z++ ) {
           cubes.push(
             <Cell
               position={{x,y,z}}
+              key={`${x}-${y}-${z}`}
             />
           )
 				}
@@ -112,7 +115,9 @@ export const ThreeBackground = () => {
         position={[-11,0,-10]}
         
       >
-        {...computedCells}
+
+          {...computedCells}
+  
       </group>
     {/* <mesh
     ref={cubeRef}
@@ -128,7 +133,7 @@ export const ThreeBackground = () => {
     material={planeMaterial}
     />
     
-
+    <mesh></mesh>
     <a.pointLight 
       
       color={[
