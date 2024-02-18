@@ -24,9 +24,11 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
-          role-to-assume: arn:aws:iam::957492689507:oidc-provider/token.actions.githubusercontent.com #change to reflect your IAM role’s ARN
+          role-to-assume: arn:aws:iam::957492689507:role/GithubCulturedSolutionsOIDC #change to reflect your IAM role’s ARN
           role-session-name: GithubCulturedSolutionsOIDC 
           aws-region: ${{ env.AWS_REGION }}
+
+      - uses: oven-sh/setup-bun@v1
       # Hello from AWS: WhoAmI
       - name: Build static site 
         run: bun run build
