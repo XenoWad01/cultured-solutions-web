@@ -53,7 +53,7 @@ export const ThreeForeground = () => {
     onChange: scrollOnChange,
     immediate: true
   })
-
+  
   const computedColor1 = useMemo(() => new Vector3(
     lerp(pageStore.pageColor1.r, pageStore.nextPageColor1.r, pageStore.progressToNextPage), 
     lerp(pageStore.pageColor1.g, pageStore.nextPageColor1.g, pageStore.progressToNextPage),
@@ -123,7 +123,7 @@ export const ThreeForeground = () => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
+    useTrans
 
     useFrame((state) => {
       if (cursorRef.current.material) {
