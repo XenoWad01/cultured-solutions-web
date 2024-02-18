@@ -30,6 +30,8 @@ jobs:
 
       - uses: oven-sh/setup-bun@v1
       # Hello from AWS: WhoAmI
+      - name: Install dependencies
+        run: bun install
       - name: Build static site 
         run: bun run build
       - name: Deploy static site
